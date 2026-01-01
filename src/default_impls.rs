@@ -18,7 +18,7 @@ macro_rules! sadaby_ints {
     };
 }
 
-sadb_ints!(u16, u32, u64, u128, usize, i16, i32, i64, i128, isize, f32, f64);
+sadaby_ints!(u16, u32, u64, u128, usize, i16, i32, i64, i128, isize, f32, f64);
 
 impl Sadaby for u8 {
     fn se_bytes(&self) -> Vec<u8> {

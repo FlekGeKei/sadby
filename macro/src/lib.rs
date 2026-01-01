@@ -13,7 +13,7 @@ use syn::Ident;
 use syn::Lit;
 use syn::spanned::Spanned;
 
-#[proc_macro_derive(Sadb)]
+#[proc_macro_derive(Sadaby)]
 pub fn sadb_derive(input: TokenStream) -> TokenStream {
     match sadb_macro(input.into()) {
         Ok(o) => o,
@@ -298,11 +298,11 @@ fn sadb_macro(input: proc_macro2::TokenStream) -> syn::Result<proc_macro2::Token
     };
 
     Ok(quote! {
-        impl #impl_generics Sadb for #ident #type_generics #where_clause {
+        impl #impl_generics Sadaby for #ident #type_generics #where_clause {
             fn ser_bytes(&self) -> Vec<u8> {
                 #complete_tokens_to
             }
-            fn de_bytes(input: &[u8]) -> Result<Self, SadbError> {
+            fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
                 #complete_tokens_from
             }
         }
