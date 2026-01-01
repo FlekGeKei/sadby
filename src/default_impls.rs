@@ -3,14 +3,14 @@ mod uuid;
 
 pub use super::*;
 
-macro_rules! sadaby_ints {
+macro_rules! sadby_ints {
     ($( $type:ty ),*) => {
         $(
-            impl Sadaby for $type {
+            impl Sadby for $type {
                 fn se_bytes(&self) -> Vec<u8> {
                     self.to_le_bytes().into()
                 }
-                fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+                fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
                     Ok(Self::from_le_bytes(<[u8; const { std::mem::size_of::<$type>() }]>::de_bytes(&input[0..const { std::mem::size_of::<$type>() }])?))
                 }
             }
@@ -18,29 +18,29 @@ macro_rules! sadaby_ints {
     };
 }
 
-sadaby_ints!(u16, u32, u64, u128, usize, i16, i32, i64, i128, isize, f32, f64);
+sadby_ints!(u16, u32, u64, u128, usize, i16, i32, i64, i128, isize, f32, f64);
 
-impl Sadaby for u8 {
+impl Sadby for u8 {
     fn se_bytes(&self) -> Vec<u8> {
         vec![*self]
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         Ok(input[0])
     }
 }
-impl Sadaby for i8 {
+impl Sadby for i8 {
     fn se_bytes(&self) -> Vec<u8> {
         vec![self.to_le_bytes()[0]]
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         Ok(Self::from_le_bytes([input[0]]))
     }
 }
-impl Sadaby for char {
+impl Sadby for char {
     fn se_bytes(&self) -> Vec<u8> {
         vec![*self as u8]
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         Ok(input[0] as Self)
     }
 }
@@ -48,7 +48,7 @@ impl Sadaby for char {
  * Waiting for:
  * - https://github.com/rust-lang/rust/issues/42721
  * - https://github.com/rust-lang/rust/issues/31844
-impl<const N: usize, T: Sadaby + Default + Copy> SerDeBytes for [T; N] {
+impl<const N: usize, T: Sadby + Default + Copy> SerDeBytes for [T; N] {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
         for item in self {
@@ -56,13 +56,13 @@ impl<const N: usize, T: Sadaby + Default + Copy> SerDeBytes for [T; N] {
         }
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut slice: [T; N] = [const { T::default() }; N];
         slice.copy_from_slice(&Vec::<T>::de_bytes(&input)?);
         Ok(slice)
     }
 }
-impl<const N: usize, T: Sadaby + Default + Clone + !Copy> SerDeBytes for [T; N] {
+impl<const N: usize, T: Sadby + Default + Clone + !Copy> SerDeBytes for [T; N] {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
         for item in self {
@@ -70,7 +70,7 @@ impl<const N: usize, T: Sadaby + Default + Clone + !Copy> SerDeBytes for [T; N] 
         }
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut slice: [T; N] = [const { T::default() }; N];
         slice.clone_from_slice(&Vec::<T>::de_bytes(&input)?);
         Ok(slice)
@@ -78,30 +78,30 @@ impl<const N: usize, T: Sadaby + Default + Clone + !Copy> SerDeBytes for [T; N] 
 }
 */
 
-impl<const N: usize> Sadaby for [u8; N] {
+impl<const N: usize> Sadby for [u8; N] {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
         buf.extend_from_slice(self);
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut slice: [u8; N] = [0u8; N];
         slice.copy_from_slice(&input[0..N]);
         Ok(slice)
     }
 }
-impl<const N: usize> Sadaby for [char; N] {
+impl<const N: usize> Sadby for [char; N] {
     fn se_bytes(&self) -> Vec<u8> {
         self.iter().map(|c| *c as u8).collect::<Vec<u8>>()
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut slice = ['\u{0}'; N];
         slice.copy_from_slice(&input.iter().map(|b| *b as char).collect::<Vec<char>>());
 
         Ok(slice)
     }
 }
-impl<const N: usize> Sadaby for [f32; N] {
+impl<const N: usize> Sadby for [f32; N] {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
         for float in self {
@@ -109,7 +109,7 @@ impl<const N: usize> Sadaby for [f32; N] {
         }
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut slice = [0.; N];
         let mut buf = Vec::<f32>::new();
 
@@ -127,7 +127,7 @@ impl<const N: usize> Sadaby for [f32; N] {
         Ok(slice)
     }
 }
-impl<T: Sadaby> Sadaby for Option<T> {
+impl<T: Sadby> Sadby for Option<T> {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
         match self {
@@ -140,16 +140,16 @@ impl<T: Sadaby> Sadaby for Option<T> {
 
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         match input[0] {
             b'S' => Ok(Some(T::de_bytes(&input[1..])?)),
             b'N' => Ok(None),
-            _ => Err(SadabyError::UnexpectedToken),
+            _ => Err(SadbyError::UnexpectedToken),
         }
     }
 }
 
-impl<T: Sadaby> Sadaby for Vec<T> {
+impl<T: Sadby> Sadby for Vec<T> {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
 
@@ -162,7 +162,7 @@ impl<T: Sadaby> Sadaby for Vec<T> {
 
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let mut output = Vec::<T>::new();
 
         #[allow(unused_assignments)]
@@ -182,7 +182,7 @@ impl<T: Sadaby> Sadaby for Vec<T> {
         Ok(output)
     }
 }
-impl<T: Sadaby> Sadaby for Box<[T]> {
+impl<T: Sadby> Sadby for Box<[T]> {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::<u8>::new();
 
@@ -195,31 +195,31 @@ impl<T: Sadaby> Sadaby for Box<[T]> {
 
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         Ok(Vec::<T>::de_bytes(input)?.into())
     }
 }
-impl Sadaby for bool {
+impl Sadby for bool {
     fn se_bytes(&self) -> Vec<u8> {
         vec![*self as u8]
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         match input[0] {
             0 => Ok(false),
             1 => Ok(true),
-            _ => Err(SadabyError::UnexpectedToken),
+            _ => Err(SadbyError::UnexpectedToken),
         }
     }
 }
-impl Sadaby for String {
+impl Sadby for String {
     fn se_bytes(&self) -> Vec<u8> {
         self.as_bytes().to_vec()
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         Ok(input.iter().map(|b| *b as char).collect::<String>())
     }
 }
-impl<T: Sadaby, Y: Sadaby> Sadaby for (T, Y) {
+impl<T: Sadby, Y: Sadby> Sadby for (T, Y) {
     fn se_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::new();
         let mut i = self.0.se_bytes();
@@ -228,7 +228,7 @@ impl<T: Sadaby, Y: Sadaby> Sadaby for (T, Y) {
         buf.append(&mut self.1.se_bytes());
         buf
     }
-    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+    fn de_bytes(input: &[u8]) -> Result<Self, SadbyError> {
         let middle = input[0] as usize;
         Ok((
             T::de_bytes(&input[..middle])?,

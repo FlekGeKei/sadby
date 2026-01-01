@@ -1,13 +1,13 @@
 [package]
-name = "sadaby"
-description = "SeriAlize DeseriAlize BYtes"
+name = "sadby"
+description = "SeriAlize Deserialize BYtes"
 authors = ["FlekGeKei"]
 license = "GPL-3.0-or-later"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-sadaby_macro = { path = "./macro" }
+sadby_macro = { path = "./macro" }
 uuid = { version = "^1.10.0", optional = true }
 
 [features]
