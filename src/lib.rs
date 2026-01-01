@@ -1,6 +1,6 @@
 mod default_impls;
 
-pub use r#macro::Sadaby;
+pub use sadaby_macro::Sadaby;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum SadabyError {

@@ -25,15 +25,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "once_cell"
 version = "1.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -67,8 +58,17 @@ checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 name = "sadaby"
 version = "0.1.0"
 dependencies = [
- "macro",
+ "sadaby_macro",
  "uuid",
+]
+
+[[package]]
+name = "sadaby_macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
