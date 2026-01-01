@@ -202,7 +202,7 @@ fn sadb_macro(input: proc_macro2::TokenStream) -> syn::Result<proc_macro2::Token
                 quote! {
                     match input[0] {
                         #(#tokens_from)*
-                        _ => Err(SerDeBytesError::UnexpectedToken),
+                        _ => Err(SadabyError::UnexpectedToken),
                     }
                 },
             )
