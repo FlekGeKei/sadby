@@ -1,0 +1,14 @@
+[package]
+name = "macro"
+version = "0.1.0"
+edition = "2024"
+authors = ["FlekGeKei"]
+license = "GPL-3.0-or-later"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.103"
+syn = { version = "2.0.109", features = ["extra-traits"] }
+quote = "1.0.42"

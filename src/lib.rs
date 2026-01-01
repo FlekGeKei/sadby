@@ -1,0 +1,13 @@
+mod default_impls;
+
+pub use r#macro::Sadb;
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum SadabyError {
+    UnexpectedToken,
+}
+
+pub trait Sadaby: Sized {
+    fn se_bytes(&self) -> Vec<u8>;
+    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError>;
+}
