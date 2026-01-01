@@ -219,3 +219,20 @@ impl Sadaby for String {
         Ok(input.iter().map(|b| *b as char).collect::<String>())
     }
 }
+impl<T: Sadaby, Y: Sadaby> Sadaby for (T, Y) {
+    fn se_bytes(&self) -> Vec<u8> {
+        let mut buf = Vec::new();
+        let mut i = self.0.se_bytes();
+        buf.push(i.len() as u8);
+        buf.append(&mut i);
+        buf.append(&mut self.1.se_bytes());
+        buf
+    }
+    fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
+        let middle = input[0] as usize;
+        Ok((
+            T::de_bytes(&input[..middle])?,
+            Y::de_bytes(&input[middle..])?,
+        ))
+    }
+}
