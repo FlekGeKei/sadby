@@ -299,7 +299,7 @@ fn sadb_macro(input: proc_macro2::TokenStream) -> syn::Result<proc_macro2::Token
 
     Ok(quote! {
         impl #impl_generics Sadaby for #ident #type_generics #where_clause {
-            fn ser_bytes(&self) -> Vec<u8> {
+            fn se_bytes(&self) -> Vec<u8> {
                 #complete_tokens_to
             }
             fn de_bytes(input: &[u8]) -> Result<Self, SadabyError> {
@@ -436,7 +436,7 @@ fn modify_sadb_tokens_enum<T: Spanned>(
         tokens_to.push(quote! {
             Self::#v_ident #field => {
                 #(
-                    buf.append(&mut #field_names.ser_bytes());
+                    buf.append(&mut #field_names.se_bytes());
                 )*
             }
         });
@@ -448,7 +448,7 @@ fn modify_sadb_tokens_enum<T: Spanned>(
         tokens_to.push(quote! {
             Self::#v_ident #field => {
                 #(
-                    let mut #field_names = #field_names.ser_bytes();
+                    let mut #field_names = #field_names.se_bytes();
                     buf.push(#field_names.len() as u8);
                     buf.append(&mut #field_names);
                 )*
@@ -492,7 +492,7 @@ fn modify_sadb_tokens_struct<T: Spanned>(
     if field_names.len() == 1 {
         tokens_to.push(quote! {
             #(
-                buf.append(&mut self.#field_names.ser_bytes());
+                buf.append(&mut self.#field_names.se_bytes());
             )*
         });
         tokens_from.push(quote! {
@@ -502,7 +502,7 @@ fn modify_sadb_tokens_struct<T: Spanned>(
         let _ = local_from.pop();
         tokens_to.push(quote! {
             #(
-                let mut #field_names = self.#field_names.ser_bytes();
+                let mut #field_names = self.#field_names.se_bytes();
                 buf.push(#field_names.len() as u8);
                 buf.append(&mut #field_names);
             )*
